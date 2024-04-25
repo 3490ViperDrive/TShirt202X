@@ -19,7 +19,12 @@ public final class Constants {
         public static final double kWheelbase = Units.inchesToMeters(19.490);
         public static final double kTrackWidth = Units.inchesToMeters(24.458);
         public static final double kNEOMaxRPM = 5676;
+        public static final double kNEOMaxRPS = kNEOMaxRPM / 60;
 
+        public static final class WheelPIDConstants {
+            public static final double kP = 0;
+            public static final double kD = 0;
+        }
     }
 
     public static final class CannonConstants {

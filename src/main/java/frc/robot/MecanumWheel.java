@@ -1,3 +1,4 @@
+package frc.robot;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -5,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import frc.lib.SparkUtils;
 import static frc.robot.Constants.DrivetrainConstants.*;
 
 import com.revrobotics.CANSparkBase;
@@ -25,7 +27,7 @@ public class MecanumWheel {
         kClosedLoop
     }
 
-    public MecanumWheel(int controllerID, boolean inverted, double kP, double kD, String name) {
+    public MecanumWheel(int controllerID, boolean inverted, String name) {
         this.controllerID = controllerID;
         this.name = name;
 
@@ -33,13 +35,11 @@ public class MecanumWheel {
         encoder = motorController.getEncoder();
         PIDController = motorController.getPIDController();
 
-        //Configure SparkMAX
-        motorController.restoreFactoryDefaults();
-        motorController.setIdleMode(IdleMode.kCoast);
-        motorController.setInverted(inverted);
-
-        PIDController.setP(kP);
-        PIDController.setD(kD);
+        SparkUtils.configure(motorController,
+            () -> motorController.setIdleMode(IdleMode.kCoast),
+            () -> SparkUtils.setInverted(motorController, inverted),
+            () -> PIDController.setP(WheelPIDConstants.kP),
+            () -> PIDController.setD(WheelPIDConstants.kD));
     }
 
     public void stopWheel() {
@@ -54,7 +54,7 @@ public class MecanumWheel {
     public void setVelocity(double speed, ControlType controlType) {
         switch (controlType) {
             case kClosedLoop:
-                PIDController.setReference(MathUtil.clamp(speed, -1, 1) * 12, CANSparkBase.ControlType.kVoltage);
+                PIDController.setReference(MathUtil.clamp(speed, -1, 1) * kNEOMaxRPM, CANSparkBase.ControlType.kVelocity);
             break;
             case kOpenLoop:
             default:
