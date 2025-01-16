@@ -2,9 +2,12 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,19 +23,21 @@ import frc.robot.Constants.ControllerConstants;
 import static frc.robot.Constants.DrivetrainConstants.*;
 
 public class DriveSubsystem extends SubsystemBase {
-    final CANSparkMax frontLeftSparkMax;
-    final CANSparkMax frontRightSparkMax;
-    final CANSparkMax backLeftSparkMax;
-    final CANSparkMax backRightSparkMax;
+    final SparkMax frontLeftSparkMax;
+    final SparkMax frontRightSparkMax;
+    final SparkMax backLeftSparkMax;
+    final SparkMax backRightSparkMax;
+
+    final SparkMaxConfig config;
 
     final MecanumDriveKinematics mecanumKinematics;
 
 
     public DriveSubsystem() {
-        frontLeftSparkMax = new CANSparkMax(kFrontLeftMotorControllerID, MotorType.kBrushless);
-        frontRightSparkMax = new CANSparkMax(kFrontRightMotorControllerID, MotorType.kBrushless);
-        backLeftSparkMax = new CANSparkMax(kBackLeftMotorControllerID, MotorType.kBrushless);
-        backRightSparkMax = new CANSparkMax(kBackRightMotorControllerID, MotorType.kBrushless);
+        frontLeftSparkMax = new SparkMax(kFrontLeftMotorControllerID, MotorType.kBrushless);
+        frontRightSparkMax = new SparkMax(kFrontRightMotorControllerID, MotorType.kBrushless);
+        backLeftSparkMax = new SparkMax(kBackLeftMotorControllerID, MotorType.kBrushless);
+        backRightSparkMax = new SparkMax(kBackRightMotorControllerID, MotorType.kBrushless);
 
         mecanumKinematics = new MecanumDriveKinematics(
             new Translation2d(kTrackWidth/2, kTrackWidth/2),
@@ -42,15 +47,24 @@ public class DriveSubsystem extends SubsystemBase {
 
         Timer.delay(1); //Delay motor config for a second to give the CANbus some time
 
-        frontLeftSparkMax.setInverted(false);
-        backLeftSparkMax.setInverted(false);
-        frontRightSparkMax.setInverted(true);
-        backRightSparkMax.setInverted(true);
+        config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kCoast);
+
+        //frontLeftSparkMax.setInverted(false);
+        //backLeftSparkMax.setInverted(false);
+        //frontRightSparkMax.setInverted(true);
+        //backRightSparkMax.setInverted(true);
+
+        //todo this is bad!
+        frontLeftSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        backLeftSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        frontRightSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        backRightSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
-        configureMotorController(frontLeftSparkMax);
-        configureMotorController(backLeftSparkMax);
-        configureMotorController(frontRightSparkMax);
-        configureMotorController(backRightSparkMax);
+        //configureMotorController(frontLeftSparkMax);
+        //configureMotorController(backLeftSparkMax);
+        //configureMotorController(frontRightSparkMax);
+        //configureMotorController(backRightSparkMax);
 
         //+x is forwards
         //TODO determine if/why using proper distances causes strafing issues (it may just be the weight of the robot)
@@ -62,11 +76,11 @@ public class DriveSubsystem extends SubsystemBase {
             new Translation2d(-kWheelbase/2, -kTrackWidth/2)); */
     }
 
-    void configureMotorController(CANSparkMax motorController) {
-        motorController.setIdleMode(IdleMode.kCoast);
+    //void configureMotorController(SparkMax motorController) {
+        //motorController.setIdleMode(IdleMode.kCoast);
         //Config current limits?
         //Config velocity PID?
-    }
+    //}
 
     @Override
     public void periodic() {

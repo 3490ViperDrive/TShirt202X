@@ -1,15 +1,15 @@
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import static frc.robot.Constants.DrivetrainConstants.*;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 
 public class MecanumWheel {
 
     final int controllerID;
-    final CANSparkMax motorController;
+    final SparkMax motorController;
     final RelativeEncoder encoder;
 
     double kP;
@@ -23,15 +23,16 @@ public class MecanumWheel {
         this.controllerID = controllerID;
         this.name = name;
 
-        motorController = new CANSparkMax(controllerID, MotorType.kBrushless);
+        motorController = new SparkMax(controllerID, MotorType.kBrushless);
         encoder = motorController.getEncoder();
 
+        //todo fix these lines for 2025, this class is currently unused so its fine
         //Configure SparkMAX
-        motorController.setIdleMode(IdleMode.kCoast);
-        motorController.setInverted(inverted);
+        //motorController.setIdleMode(IdleMode.kCoast);
+        //motorController.setInverted(inverted);
 
         //Configure encoder
-        encoder.setVelocityConversionFactor(1/kNEOMaxRPM);
+        //encoder.setVelocityConversionFactor(1/kNEOMaxRPM);
     }
 
     public void stopWheel() {
