@@ -58,8 +58,8 @@ public class DriveSubsystem extends SubsystemBase {
         //todo this is bad!
         frontLeftSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         backLeftSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        frontRightSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        backRightSparkMax.configure(config.inverted(false), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        frontRightSparkMax.configure(config.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        backRightSparkMax.configure(config.inverted(true), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         //configureMotorController(frontLeftSparkMax);
         //configureMotorController(backLeftSparkMax);
